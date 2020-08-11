@@ -26,6 +26,7 @@ public class BookPage {
     private By asteriskLabel = By.xpath("//*[@class='fare-atom-price-disclaimer-indicator']");
     private By dailyHistogram = By.xpath("//*[@class='bar-body']");
     private By days = By.xpath("//*[@class='chart-bar']");
+    private By daysMobile = By.xpath("//*[@class='tittle-bar']");
     private By nextMonthButton = By.xpath("//*[@class='slick-arrow slick-next']");
     private By linkCheckAvailability = By.xpath("//*[@class='link-check-availability']");
     private By noDataMessage = By.xpath("//*[@class='aeroplane-section-noimg']");
@@ -33,7 +34,9 @@ public class BookPage {
     private By barDailyHistogramRoutes = By.xpath("//*[@class='title-tooltip-deal']");
     private By barDailyHistogramDates = By.xpath("//*[@class='body-tooltip-deal']");
     private By popupCloseButton = By.xpath("//*[@class='material-icons']");
-    private By airportsLists = By.xpath("//*[@class='em__field form-group LocationSelector__container false false']");
+    private By origin = By.xpath("//*[@class='em__field form-group LocationSelector__container false false']");
+    private By airportsFromPopup = By.xpath("//*[@class='css-dvua67-singleValue LocationSelector__single-value']");
+    private By seeMoreLink = By.xpath("//*[@class='load-more']");
 
     public BookPage(WebDriver driver) {
         this.driver = driver;
@@ -87,6 +90,10 @@ public class BookPage {
         return monthElements.get(position).isDisplayed();
     }
 
+    public boolean isVisibleSeMoreLink() {
+        return driver.findElement(seeMoreLink).isDisplayed();
+    }
+
     public String getMonthOfCardInCarousel(int position) {
         List<WebElement> monthElements = driver.findElements(monthly);
         return monthElements.get(position).getText();
@@ -99,6 +106,9 @@ public class BookPage {
 
     public int getHistogramSize() {
         return driver.findElements(days).size();
+    }
+    public int getHistogramSizeMobile() {
+        return driver.findElements(daysMobile).size();
     }
 
     private String getTextFromHistogramPosition(int position) {
@@ -185,22 +195,49 @@ public class BookPage {
         return dailyHistogramTooltipsList.get(position).isDisplayed();
     }
 
-    public BookPage goTOPopup(){
+    public BookPage goTOPopup() throws InterruptedException {
         List<WebElement> histogramDays = driver.findElements(barDailyHistogram);
         histogramDays.get(0).click();
+        Thread.sleep(500);
         return this;
     }
 
     public Boolean isVisibleOriginAirportInPopup(){
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(popupCloseButton));
-        List<WebElement> airportsElements = driver.findElements(airportsLists);
+        List<WebElement> airportsElements = driver.findElements(origin);
         return airportsElements.get(2).isDisplayed();
     }
 
-    public Boolean isVisibleArrivalAirportInPopup(){
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(popupCloseButton));
-        List<WebElement> airportsElements = driver.findElements(airportsLists);
+    public Boolean isVisibleArrivalAirportInPopup() {
+        List<WebElement> airportsElements = driver.findElements(origin);
         return airportsElements.get(3).isDisplayed();
+    }
+
+    public String getAirportFromPopup(int position) throws InterruptedException {
+        Thread.sleep(500);
+        List<WebElement> airportsElements = driver.findElements(airportsFromPopup);
+        return airportsElements.get(position).getText();
+    }
+
+    public String getOriginAirportSelectedMnemonic(){
+        List<WebElement> faresElements = driver.findElements(fares);
+        return new Select(faresElements.get(0)).getFirstSelectedOption().getText().substring(0, 3);
+    }
+
+    public String getArrivalAirportSelectedMnemonic(){
+        List<WebElement> faresElements = driver.findElements(fares);
+        return new Select(faresElements.get(1)).getFirstSelectedOption().getText().substring(0, 3);
+    }
+
+    public String getDateDepartureSelectedHistogram() {
+        List<WebElement> histogramDays = driver.findElements(barDailyHistogram);
+        WebElement date = histogramDays.get(0).findElement(barDailyHistogramDates);
+        return date.getText();
+    }
+
+    public String getDateReturnSelectedHistogram() {
+        List<WebElement> histogramDays = driver.findElements(barDailyHistogram);
+        WebElement date = histogramDays.get(0).findElement(barDailyHistogramDates);
+        return date.getText();
     }
 
     protected void showTooltipInHistogram(int position) throws InterruptedException {
@@ -208,12 +245,12 @@ public class BookPage {
         Actions actions = new Actions(driver);
         //actions.moveToElement(dailyHistogramBarsList.get(position)).perform();
         actions.clickAndHold(dailyHistogramBarsList.get(position)).moveToElement(dailyHistogramBarsList.get(position));
-        Thread.sleep(500);
     }
 
     protected void executeScript(String argument, By by){
         JavascriptExecutor executor = (JavascriptExecutor) driver; // esto permite no hacer scroll
         executor.executeScript(argument, driver.findElement(by));
     }
+
 
 }

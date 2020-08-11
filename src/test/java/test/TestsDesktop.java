@@ -1,6 +1,7 @@
 package test;
 
 import base.BaseTestsDesktop;
+import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -181,7 +182,7 @@ public class TestsDesktop extends BaseTestsDesktop {
     }
 
     //@Test
-    //Look for a monthly carousel card that has no data available
+    //10. Look for a monthly carousel card that has no data available
     public void verifyMonthlyCarouselWithoutData() throws InterruptedException {
         bookPage = bookPage.goTOMonthlySection().findCardWithoutData();
         assertTrue(bookPage.isVisibleLinkCheckAvailability());
@@ -216,15 +217,30 @@ public class TestsDesktop extends BaseTestsDesktop {
 
     //@Test
     //14. Click on one of the daily bar graphs
-    public void verifyPopupPresenceFromDailyBar(){
+    public void verifyPopupPresenceFromDailyBar() throws InterruptedException {
         bookPage = bookPage.goTODailyHistogram().goTOPopup();
         assertTrue(bookPage.isVisibleOriginAirportInPopup() && bookPage.isVisibleArrivalAirportInPopup(),
                 "Origin or Arrival airports are not visible in the popup");
     }
 
-    //@Test
+    @Test
     //15. Check for the data inside the popup is the same than the fare selected
-    public void verifyDataPopupFromDailyBar(){
+    public void verifyDataPopupFromDailyBar() throws InterruptedException {
+        bookPage = bookPage.goTOMonthlySection().goTODailyHistogram();
+        String originAirportFare = bookPage.getOriginAirportSelected();
+        String arrivalAirportFare = bookPage.getArrivalAirportSelected();
+        String originAirportFareMnemonic = bookPage.getOriginAirportSelectedMnemonic();
+        String arrivalAirportFareMnemonic = bookPage.getArrivalAirportSelectedMnemonic();
+        String dateDepartureSelectedHistogram = bookPage.getDateDepartureSelectedHistogram();
+        String dateReturnSelectedHistogram = bookPage.getDateReturnSelectedHistogram();
+        System.out.println("Departure: " + dateDepartureSelectedHistogram + "   Return: "+ dateReturnSelectedHistogram );
+//        bookPage = bookPage.goTOPopup();
+//        String originAirportPopup = bookPage.getAirportFromPopup(2);
+//        String arrivalAirportPopup = bookPage.getAirportFromPopup(3);
+//        assertTrue(originAirportPopup.contains(originAirportFare) && originAirportPopup.contains(originAirportFareMnemonic),
+//                "Origin airport city or mnemonic does not match");
+//        assertTrue(arrivalAirportPopup.contains(arrivalAirportFare) && arrivalAirportPopup.contains(arrivalAirportFareMnemonic),
+//                "Arrival airport city or mnemonic does not match");
 
     }
 

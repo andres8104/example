@@ -23,11 +23,11 @@ public class BaseTestsMobile {
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         Map<String,String> mobileEmulation = new HashMap<>();
-        mobileEmulation.put("deviceName", "GalaxyS5");
+        mobileEmulation.put("deviceName", "Galaxy S5");
         Map<String, Object> chromeOptions = new HashMap<>();
         chromeOptions.put("mobileEmulation",mobileEmulation);
         capabilities.setCapability(ChromeOptions.CAPABILITY,chromeOptions);
-        ChromeDriver driver = new ChromeDriver(capabilities);
+        driver = new ChromeDriver(capabilities);
         driver.manage().window().maximize();
         driver.get("https://vs-prod.airtrfx.com/en-us/flights-from-orlando-to-manchester");
 //        //driver.get("http://localhost:18080/klaros-web/pages/login.seam");
@@ -36,7 +36,7 @@ public class BaseTestsMobile {
 
     @AfterMethod
     public void tearDown(){
-        driver.quit();
+        //driver.quit();
     }
 
 }
