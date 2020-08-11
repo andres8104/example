@@ -32,6 +32,8 @@ public class BookPage {
     private By barDailyHistogram = By.xpath("//*[@class='color   ']");
     private By barDailyHistogramRoutes = By.xpath("//*[@class='title-tooltip-deal']");
     private By barDailyHistogramDates = By.xpath("//*[@class='body-tooltip-deal']");
+    private By popupCloseButton = By.xpath("//*[@class='material-icons']");
+    private By airportsLists = By.xpath("//*[@class='em__field form-group LocationSelector__container false false']");
 
     public BookPage(WebDriver driver) {
         this.driver = driver;
@@ -53,6 +55,7 @@ public class BookPage {
     public BookPage goTODailyHistogram() {
         executeScript("arguments[0].scrollIntoView(true)", breadcrumb);
         wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(dailyHistogram));
+        executeScript("arguments[0].scrollIntoView(true)", dailyHistogram);
         return this;
     }
 
@@ -180,6 +183,24 @@ public class BookPage {
         List<WebElement> dailyHistogramTooltipsList = driver.findElements(barDailyHistogramDates);
         showTooltipInHistogram(position);
         return dailyHistogramTooltipsList.get(position).isDisplayed();
+    }
+
+    public BookPage goTOPopup(){
+        List<WebElement> histogramDays = driver.findElements(barDailyHistogram);
+        histogramDays.get(0).click();
+        return this;
+    }
+
+    public Boolean isVisibleOriginAirportInPopup(){
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(popupCloseButton));
+        List<WebElement> airportsElements = driver.findElements(airportsLists);
+        return airportsElements.get(2).isDisplayed();
+    }
+
+    public Boolean isVisibleArrivalAirportInPopup(){
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(popupCloseButton));
+        List<WebElement> airportsElements = driver.findElements(airportsLists);
+        return airportsElements.get(3).isDisplayed();
     }
 
     protected void showTooltipInHistogram(int position) throws InterruptedException {

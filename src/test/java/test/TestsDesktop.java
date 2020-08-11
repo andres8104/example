@@ -1,15 +1,15 @@
 package test;
 
-import base.BaseTests;
-import org.testng.annotations.Test;
+import base.BaseTestsDesktop;
+
 import java.time.LocalDate;
 import java.time.Month;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class Tests extends BaseTests {
+public class TestsDesktop extends BaseTestsDesktop {
 
-    @Test
+    //@Test
     //2. Go to the top of the module
     public void goTopModule() {
        bookPage =  bookPage.goTOMonthlySection();
@@ -17,7 +17,7 @@ public class Tests extends BaseTests {
                "Monthly section does not show");
     }
 
-    @Test
+    //@Test
     //3. Look at the line after the module heading
     public void verifyLineAfterHeading(){
         bookPage =  bookPage.goTOFaresSection();
@@ -42,7 +42,7 @@ public class Tests extends BaseTests {
 
     }
 
-    @Test
+    //@Test
     //6. Look at the monthly carousel section of the module
     public void verifyMonthlyCarousel(){
         bookPage =  bookPage.goTOMonthlySection();
@@ -82,7 +82,7 @@ public class Tests extends BaseTests {
         assertTrue(dateCompare.equalsIgnoreCase(bookPage.getMonthOfCardInCarousel(2)));
     }
 
-    @Test
+    //@Test
     //7. Look within one of the monthly cards from the monthly carousel
     public void verifyMonthlyCard(){
         bookPage =  bookPage.goTOMonthlySection();
@@ -93,7 +93,7 @@ public class Tests extends BaseTests {
         assertTrue(bookPage.isVisibleAsteriskLabelInCard(0), "Asterisk Label is not visible on card");
     }
 
-    @Test
+    //@Test
     //8. Click on a monthly carousel card
     public void clickMonthlyCarousel() throws InterruptedException {
         bookPage = bookPage.goTODailyHistogram();
@@ -126,7 +126,7 @@ public class Tests extends BaseTests {
         assertEquals(35, bookPage.getHistogramSize(), "Histogram size is not 35");
     }
 
-    @Test
+    //@Test
     //9. Click on the chevron / arrow to the right of the monthly carousel
     public void clickArrowMonthlyCarousel() throws InterruptedException {
         bookPage =  bookPage.goTOMonthlySection().goTONextCardsInCarousel();
@@ -207,7 +207,7 @@ public class Tests extends BaseTests {
     //++En construccion++
     //13. Hover over one of the daily bar graphs
     public void verifyTooltipDailyBar() throws InterruptedException {
-        bookPage.goTODailyHistogram();
+        bookPage =  bookPage.goTODailyHistogram();
         assertTrue(bookPage.isVisibleRouteInTooltipDailyBar(0),
                 "The route does not appears in tooltip");
         assertTrue(bookPage.isVisibleDatesInTooltipDailyBar(0),
@@ -217,7 +217,9 @@ public class Tests extends BaseTests {
     //@Test
     //14. Click on one of the daily bar graphs
     public void verifyPopupPresenceFromDailyBar(){
-
+        bookPage = bookPage.goTODailyHistogram().goTOPopup();
+        assertTrue(bookPage.isVisibleOriginAirportInPopup() && bookPage.isVisibleArrivalAirportInPopup(),
+                "Origin or Arrival airports are not visible in the popup");
     }
 
     //@Test
@@ -226,7 +228,7 @@ public class Tests extends BaseTests {
 
     }
 
-    @Test
+    //@Test
     //16. Check which is the month appearing in the months carousel
     public void verifyMonthInCarousel(){
         bookPage =  bookPage.goTOMonthlySection();
@@ -242,23 +244,11 @@ public class Tests extends BaseTests {
         assertTrue(dateCompare.equalsIgnoreCase(bookPage.getMonthOfCardInCarousel(0)));
     }
 
-    @Test
+    //@Test
     //17. Check the number of fares in the histogram bars appearing in desktop is different from the ones that appear on mobile
     public void verifyNumberFaresDesktop(){
         bookPage = bookPage.goTODailyHistogram();
         assertEquals(35, bookPage.getHistogramSize(), "Histogram size is not 35");
-    }
-
-    //@Test
-    //18. Check the number of fares in the histogram bars appearing in desktop is different from the ones that appear on mobile
-    public void verifyNumberFaresMobile(){
-
-    }
-
-    //@Test
-    //19. Check that a button appears below of the fares
-    public void verifyButtonBellowFares(){
-
     }
 
     //@Test

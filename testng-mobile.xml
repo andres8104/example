@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Framework test" verbose="1" parallel="tests" thread-count="1"  configfailurepolicy="continue">
+    <test name="Automation Test" annotations="JDK" preserve-order="true">
+
+        <!--<parameter name="browser" value="chrome" />
+        <parameter name="browserVersion" value="74.0" />
+        <parameter name="url" value="https://masters.musala.com/" />
+        <parameter name="selenium" value="http://172.24.10.91:4444/wd/hub" />-->
+        <classes>
+            <!--<class name="base.BaseTestsDesktop"/>-->
+            <class name="test.TestsMobile"/>
+        </classes>
+    </test>
+</suite>

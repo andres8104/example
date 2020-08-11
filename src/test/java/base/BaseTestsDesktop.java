@@ -5,7 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.*;
 import pages.BookPage;
 
-public class BaseTests {
+public class BaseTestsDesktop {
 
     private WebDriver driver;
     protected BookPage bookPage;
