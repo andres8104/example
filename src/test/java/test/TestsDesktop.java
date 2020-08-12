@@ -2,7 +2,10 @@ package test;
 
 import base.BaseTestsDesktop;
 import org.testng.annotations.Test;
+import pages.BookPage;
+import pages.FlightPage;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import static org.testng.Assert.assertEquals;
@@ -10,7 +13,7 @@ import static org.testng.Assert.assertTrue;
 
 public class TestsDesktop extends BaseTestsDesktop {
 
-    //@Test
+    @Test
     //2. Go to the top of the module
     public void goTopModule() {
        bookPage =  bookPage.goTOMonthlySection();
@@ -18,7 +21,7 @@ public class TestsDesktop extends BaseTestsDesktop {
                "Monthly section does not show");
     }
 
-    //@Test
+    @Test
     //3. Look at the line after the module heading
     public void verifyLineAfterHeading(){
         bookPage =  bookPage.goTOFaresSection();
@@ -43,7 +46,7 @@ public class TestsDesktop extends BaseTestsDesktop {
 
     }
 
-    //@Test
+    @Test
     //6. Look at the monthly carousel section of the module
     public void verifyMonthlyCarousel(){
         bookPage =  bookPage.goTOMonthlySection();
@@ -83,7 +86,7 @@ public class TestsDesktop extends BaseTestsDesktop {
         assertTrue(dateCompare.equalsIgnoreCase(bookPage.getMonthOfCardInCarousel(2)));
     }
 
-    //@Test
+    @Test
     //7. Look within one of the monthly cards from the monthly carousel
     public void verifyMonthlyCard(){
         bookPage =  bookPage.goTOMonthlySection();
@@ -94,7 +97,7 @@ public class TestsDesktop extends BaseTestsDesktop {
         assertTrue(bookPage.isVisibleAsteriskLabelInCard(0), "Asterisk Label is not visible on card");
     }
 
-    //@Test
+    @Test
     //8. Click on a monthly carousel card
     public void clickMonthlyCarousel() throws InterruptedException {
         bookPage = bookPage.goTODailyHistogram();
@@ -127,7 +130,7 @@ public class TestsDesktop extends BaseTestsDesktop {
         assertEquals(35, bookPage.getHistogramSize(), "Histogram size is not 35");
     }
 
-    //@Test
+    @Test
     //9. Click on the chevron / arrow to the right of the monthly carousel
     public void clickArrowMonthlyCarousel() throws InterruptedException {
         bookPage =  bookPage.goTOMonthlySection().goTONextCardsInCarousel();
@@ -181,7 +184,7 @@ public class TestsDesktop extends BaseTestsDesktop {
         assertTrue(dateCompare.equalsIgnoreCase(bookPage.getMonthOfCardInCarousel(5)));
     }
 
-    //@Test
+    @Test
     //10. Look for a monthly carousel card that has no data available
     public void verifyMonthlyCarouselWithoutData() throws InterruptedException {
         bookPage = bookPage.goTOMonthlySection().findCardWithoutData();
@@ -192,10 +195,24 @@ public class TestsDesktop extends BaseTestsDesktop {
                 "No data message and expected does not match");
     }
 
-    //@Test
+    @Test
     //11. There should be a second part of the module that displays the price data throughout the month (histogram bars)
     public void verifyPriceDataMonthly(){
+        bookPage = bookPage.goTODailyHistogram();
+        LocalDate currentDate = LocalDate.now();
+        int currentDay = currentDate.getDayOfMonth();
+        String shortMonth = currentDate.getMonth().toString().substring(0,3);
 
+        /**
+         * Verifying first day in the daily histogram
+         */
+        DayOfWeek nexDayOfWeek = DayOfWeek.of(currentDate.getDayOfWeek().getValue() + 1);
+        String shortDayOfWeek = nexDayOfWeek.toString().substring(0, 2);
+        assertEquals(shortMonth, bookPage.getShortMonthFromHistogram(0),
+                "Short month in histogram and current does not match");
+        assertEquals(Integer.toString(currentDay+1), bookPage.getDayFromHistogram(0),
+                "Day in histogram and current does not match");
+        assertTrue(shortDayOfWeek.equalsIgnoreCase(bookPage.getShortDayOfWeekFromHistogram(0)));
     }
 
     //@Test
@@ -204,18 +221,19 @@ public class TestsDesktop extends BaseTestsDesktop {
 
     }
 
-    //@Test
-    //++En construccion++
+    @Test
     //13. Hover over one of the daily bar graphs
     public void verifyTooltipDailyBar() throws InterruptedException {
         bookPage =  bookPage.goTODailyHistogram();
         assertTrue(bookPage.isVisibleRouteInTooltipDailyBar(0),
                 "The route does not appears in tooltip");
-        assertTrue(bookPage.isVisibleDatesInTooltipDailyBar(0),
+        assertTrue(bookPage.isVisibleDatesInTooltipDailyBar(),
                 "The dates does not appears in tooltip");
+        assertTrue(bookPage.isVisiblePriceInTooltipDailyBar(),
+                "The Price does not appears in tooltip");
     }
 
-    //@Test
+    @Test
     //14. Click on one of the daily bar graphs
     public void verifyPopupPresenceFromDailyBar() throws InterruptedException {
         bookPage = bookPage.goTODailyHistogram().goTOPopup();
@@ -231,20 +249,27 @@ public class TestsDesktop extends BaseTestsDesktop {
         String arrivalAirportFare = bookPage.getArrivalAirportSelected();
         String originAirportFareMnemonic = bookPage.getOriginAirportSelectedMnemonic();
         String arrivalAirportFareMnemonic = bookPage.getArrivalAirportSelectedMnemonic();
-        String dateDepartureSelectedHistogram = bookPage.getDateDepartureSelectedHistogram();
-        String dateReturnSelectedHistogram = bookPage.getDateReturnSelectedHistogram();
-        System.out.println("Departure: " + dateDepartureSelectedHistogram + "   Return: "+ dateReturnSelectedHistogram );
-//        bookPage = bookPage.goTOPopup();
-//        String originAirportPopup = bookPage.getAirportFromPopup(2);
-//        String arrivalAirportPopup = bookPage.getAirportFromPopup(3);
-//        assertTrue(originAirportPopup.contains(originAirportFare) && originAirportPopup.contains(originAirportFareMnemonic),
-//                "Origin airport city or mnemonic does not match");
-//        assertTrue(arrivalAirportPopup.contains(arrivalAirportFare) && arrivalAirportPopup.contains(arrivalAirportFareMnemonic),
-//                "Arrival airport city or mnemonic does not match");
+        String datesSelectedHistogram = bookPage.getDatesSelectedHistogram();
+        String dateDepartureSelectedHistogram = datesSelectedHistogram.split("-")[0].trim();
+        String dateReturnSelectedHistogram = datesSelectedHistogram.split("-")[1].trim();
+        bookPage = bookPage.goTOPopup();
+        String originAirportPopup = bookPage.getOriginAirportFromPopup();
+        String arrivalAirportPopup = bookPage.getArrivalAirportFromPopup();
+        String departureDatePopup = bookPage.getDateDepartureSelectedPopup();
+        String returnDatePopup = bookPage.getDateReturnSelectedPopup();
+        assertTrue(originAirportPopup.contains(originAirportFare) && originAirportPopup.contains(originAirportFareMnemonic),
+                "Origin airport city or mnemonic does not match");
+        assertTrue(arrivalAirportPopup.contains(arrivalAirportFare) && arrivalAirportPopup.contains(arrivalAirportFareMnemonic),
+                "Arrival airport city or mnemonic does not match");
+
+        assertTrue(dateDepartureSelectedHistogram.equalsIgnoreCase(departureDatePopup),
+                "Departure date selected does not match with departure date in popup");
+        assertTrue(dateReturnSelectedHistogram.equalsIgnoreCase(returnDatePopup),
+                "Return date selected does not match with Return date in popup");
 
     }
 
-    //@Test
+    @Test
     //16. Check which is the month appearing in the months carousel
     public void verifyMonthInCarousel(){
         bookPage =  bookPage.goTOMonthlySection();
@@ -260,7 +285,7 @@ public class TestsDesktop extends BaseTestsDesktop {
         assertTrue(dateCompare.equalsIgnoreCase(bookPage.getMonthOfCardInCarousel(0)));
     }
 
-    //@Test
+    @Test
     //17. Check the number of fares in the histogram bars appearing in desktop is different from the ones that appear on mobile
     public void verifyNumberFaresDesktop(){
         bookPage = bookPage.goTODailyHistogram();
@@ -274,9 +299,17 @@ public class TestsDesktop extends BaseTestsDesktop {
     }
 
     //@Test
+    // ---- En construccion
     //21. Click the Book now button inside the pop up and check the landing page
-    public void verifyLandingPage(){
-
+    public void verifyLandingPage() throws InterruptedException {
+        bookPage = bookPage.goTODailyHistogram().goTOPopup();
+        String originAirportPopup = bookPage.getOriginAirportFromPopup();
+        String arrivalAirportPopup = bookPage.getArrivalAirportFromPopup();
+        String originMnemonic = bookPage.getAirportMnemonicFromPopup(originAirportPopup);
+        String arrivalMnemonic = bookPage.getAirportMnemonicFromPopup(arrivalAirportPopup);
+        FlightPage flightPage = bookPage.goTOFlightPage();
+        assertEquals(originMnemonic, flightPage.getOriginAirportMnemonicFlightPage());
+        assertEquals(arrivalMnemonic, flightPage.getArrivalAirportMnemonicFlightPage());
     }
 
     //@Test
